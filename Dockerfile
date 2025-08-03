@@ -16,7 +16,7 @@ RUN go mod download github.com/coredns/coredns@v${COREDNS_VERS}
 WORKDIR $GOPATH/pkg/mod/github.com/coredns/coredns@v${COREDNS_VERS}
 RUN go mod download
 
-COPY ./coredns-isonetworking /plugin
+COPY . /plugin
 # COPY --link ./ $GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
 
 RUN go mod edit -replace isonetworking=/plugin
