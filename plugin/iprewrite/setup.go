@@ -1,4 +1,4 @@
-// setup.go
+// github.com/TheRealKidMagic/coredns-isonetworking/iprewrite/setup.go
 package iprewrite
 
 import (
