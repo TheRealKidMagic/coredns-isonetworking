@@ -10,7 +10,7 @@ RUN apk add --no-cache gcc musl-dev git binutils
 
 ARG CGO_ENABLED=1
 ARG PLUGIN_PRIO=50
-ARG COREDNS_VERS=1.10.1
+ARG COREDNS_VERS=latest
 
 # RUN go mod download github.com/coredns/coredns@v${COREDNS_VERS}
 # WORKDIR $GOPATH/pkg/mod/github.com/coredns/coredns@v${COREDNS_VERS}
