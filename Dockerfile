@@ -16,8 +16,11 @@ WORKDIR /go/src/github.com/coredns/coredns
 # Copy the local iprewrite plugin source code into the CoreDNS source directory
 COPY ./plugin/iprewrite ./plugin/iprewrite/
 
-# Add iprewrite plugin to the plugin.cfg file
-RUN echo "iprewrite:./plugin/iprewrite" >> plugin.cfg
+# Add iprewrite plugin to the plugin.cfg file - aligns the path to CoreDNS
+RUN echo "iprewrite:github.com/coredns/coredns/plugin/iprewrite" >> plugin.cfg
+
+# Crucial to realign the path relative to the Go build
+RUN go mod edit -replace github.com/coredns/coredns/plugin/iprewrite=./plugin/iprewrite
 
 # Run 'go mod tidy' to resolve and download dependencies for the plugin
 RUN go mod tidy
