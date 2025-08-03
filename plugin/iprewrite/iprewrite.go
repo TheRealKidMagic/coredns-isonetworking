@@ -1,4 +1,4 @@
-// iprewrite.go
+// github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite/iprewrite.go
 
 package iprewrite
 
