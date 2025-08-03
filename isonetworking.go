@@ -1,6 +1,6 @@
 // github.com/TheRealKidMagic/coredns-isonetworking/isonetworking.go
 
-package iprewrite
+package isonetworking
 
 import (
 	"context"
@@ -111,7 +111,7 @@ func (i IP) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int
 }
 
 // Name implements the plugin.Handler interface
-func (i IP) Name() string { return "iprewrite" }
+func (i IP) Name() string { return "isonetworking" }
 
 // getCorednsIPs dynamically discovers all IP address of the Coredns container.
 func getCorednsIPs() ([]net.IP, error) {
