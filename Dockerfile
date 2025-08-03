@@ -14,11 +14,10 @@ WORKDIR $GOPATH/pkg/mod/github.com/coredns/coredns@v${COREDNS_VERS}
 RUN go mod download
 
 COPY --link ./ $GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
-RUN sed -i "s/^#.*//g; /^$/d; $PLUGIN_PRIO i docker:isonetworking" plugin.cfg \
-    && go mod edit -replace\
-    isonetworking=$GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking\
-    && go generate coredns.go && go build -mod=mod -o=/usr/local/bin/coredns && \
-    apk --no-cache add binutils && strip -vs /usr/local/bin/coredns
+RUN sed -i "s/^#.*//g; /^$/d; $PLUGIN_PRIO i docker:isonetworking" plugin.cfg 
+RUN go mod edit -replace isonetworking=$GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
+RUN go generate coredns.go && go build -mod=mod -o=/usr/local/bin/coredns
+RUN apk --no-cache add binutils && strip -vs /usr/local/bin/coredns
     
 FROM alpine:${ALPINE_VERS}
 RUN apk --no-cache add ca-certificates gettext
