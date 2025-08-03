@@ -12,9 +12,12 @@ ARG CGO_ENABLED=1
 ARG PLUGIN_PRIO=50
 ARG COREDNS_VERS=1.10.1
 
-RUN go mod download github.com/coredns/coredns@v${COREDNS_VERS}
-WORKDIR $GOPATH/pkg/mod/github.com/coredns/coredns@v${COREDNS_VERS}
-RUN go mod download
+# RUN go mod download github.com/coredns/coredns@v${COREDNS_VERS}
+# WORKDIR $GOPATH/pkg/mod/github.com/coredns/coredns@v${COREDNS_VERS}
+# RUN go mod download
+
+WORKDIR /go/src/github.com/coredns/coredns
+RUN git clone --branch v${COREDNS_VERS} https://github.com/coredns/coredns.git .
 
 COPY . /plugin
 # COPY --link ./ $GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
@@ -22,7 +25,8 @@ COPY . /plugin
 RUN go mod edit -replace isonetworking=/plugin
 # RUN go mod edit -replace isonetworking=$GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
 
-RUN sed -i "s/^#.*//g; /^$/d; $PLUGIN_PRIO i docker:isonetworking" plugin.cfg 
+RUN sed -i "${PLUGIN_PRIO} i\\    docker:isonetworking" plugin.cfg
+# RUN sed -i "s/^#.*//g; /^$/d; $PLUGIN_PRIO i docker:isonetworking" plugin.cfg 
 
 RUN go generate coredns.go
 RUN go build -mod=mod -o=/usr/local/bin/coredns
