@@ -1,5 +1,5 @@
 // github.com/TheRealKidMagic/coredns-isonetworking/setup.go
-package iprewrite
+package isonetworking
 
 import (
 	"net"
