@@ -26,6 +26,7 @@ RUN go mod edit -replace github.com/TheRealKidMagic/coredns-isonetworking/plugin
 RUN go mod tidy
 
 #RUN go get gopkg.in/DataDog/dd-trace-go.v1@v1.44.0
+RUN ls plugin/iprewrite && cat plugin.cfg && go mod tidy
 
 # Build CoreDNS with iprewrite plugin
 RUN make coredns
