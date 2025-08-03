@@ -1,21 +1,26 @@
 # Dockerfile
+# Start with a builder stage to compile the application
 FROM golang:1.20-alpine AS builder
 
-ENV COREDNS_VERSION=1.10.1
-ENV COREDNS_PLUGINS="file:./plugin/file,forward:./plugin/forward,iprewrite:./plugin/iprewrite"
+# Set CoreDNS version
+ENV COREDNS_REPO=https://github.com/coredns/coredns.git
+ENV COREDNS_TAG=v1.10.1
 
 # Install Git and make
 RUN apk add --no-cache git make
 
 # Clone CoreDNS source
-RUN git clone https://github.com/coredns/coredns.git /go/src/github.com/coredns/coredns
+RUN git clone --depth 1 --branch ${COREDNS_TAG} ${COREDNS_REPO} /go/src/github.com/coredns/coredns
 WORKDIR /go/src/github.com/coredns/coredns
 
-# Copy the iprewrite plugin source code into the CoreDNS source directory
+# Copy the local iprewrite plugin source code into the CoreDNS source directory
 COPY ./plugin/iprewrite ./plugin/iprewrite/
 
 # Add iprewrite plugin to the plugin.cfg file
 RUN echo "iprewrite:./plugin/iprewrite" >> plugin.cfg
+
+# Run 'go mod tidy' to resolve and download dependencies for the plugin
+RUN go mod tidy
 
 # Build CoreDNS with iprewrite plugin
 RUN make coredns
@@ -24,12 +29,15 @@ RUN make coredns
 FROM alpine:3.18
 RUN apk add --no-cache gettext
 
+# Copy the compiled CoreDNS binary from the builder stage
 COPY --from=builder /go/src/github.com/coredns/coredns/coredns /usr/local/bin/coredns
 
+# Set up the working directory and copy necessary files for runtime
 WORKDIR /etc/coredns
 COPY Corefile.tmpl .
 COPY entrypoint.sh .
 
+# Make the entrypoint script executable
 RUN chmod +x /etc/coredns/entrypoint.sh
 
 ENTRYPOINT ["/etc/coredns/entrypoint.sh"]
