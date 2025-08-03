@@ -1,34 +1,21 @@
 # Dockerfile
 # Start with a builder stage to compile the application
-FROM golang:1.20-alpine AS builder
+FROM coredns/coredns-builder:latest as builder
 
-# Set CoreDNS version
-ENV COREDNS_REPO=https://github.com/coredns/coredns.git
-ENV COREDNS_TAG=v1.10.1
-
-# Install Git and make
-RUN apk add --no-cache git make
-
-# Clone CoreDNS source
-RUN git clone --depth 1 --branch ${COREDNS_TAG} ${COREDNS_REPO} /go/src/github.com/coredns/coredns
+# Set up working directory
 WORKDIR /go/src/github.com/coredns/coredns
 
-# Copy the local iprewrite plugin source code into the CoreDNS source directory
+# Copy your plugin into place
 COPY ./plugin/iprewrite ./plugin/iprewrite/
 
-# Add iprewrite plugin to the plugin.cfg file - aligns the path to CoreDNS
+# Register plugin in plugin.cfg
 RUN echo "iprewrite:github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite" >> plugin.cfg
 
 # Insert import statement into the import block of main.go
-RUN sed -i '/^import (/a\    _ "github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite"' coredns/main.go
-
-# Crucial to realign the path relative to the Go build
-RUN go mod edit -replace github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite=./plugin/iprewrite
+RUN sed -i '/^import (/a\    _ "github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite"' main.go
 
 # Run 'go mod tidy' to resolve and download dependencies for the plugin
 RUN go mod tidy
-
-RUN grep 'iprewrite' main.go
 
 # Build CoreDNS with iprewrite plugin
 RUN make coredns
