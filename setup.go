@@ -1,4 +1,4 @@
-// github.com/TheRealKidMagic/coredns-isonetworking/iprewrite/setup.go
+// github.com/TheRealKidMagic/coredns-isonetworking/setup.go
 package iprewrite
 
 import (
@@ -11,7 +11,7 @@ import (
 )
 
 // init registers this plugin.
-func init() { plugin.Register("iprewrite", setup) }
+func init() { plugin.Register("isonetworking", setup) }
 
 // setup is the function that gets called by the coredns framework to set up the plugin.
 func setup(c *caddy.Controller) error {
