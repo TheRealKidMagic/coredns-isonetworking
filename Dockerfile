@@ -5,6 +5,9 @@ ARG ALPINE_VERS=3.17
 
 FROM golang:${GOLANG_VERS}-alpine${ALPINE_VERS} as builder
 
+RUN apk add --no-cache gcc musl-dev git binutils
+# RUN apk --no-cache add binutils 
+
 ARG CGO_ENABLED=1
 ARG PLUGIN_PRIO=50
 ARG COREDNS_VERS=1.10.1
@@ -13,13 +16,16 @@ RUN go mod download github.com/coredns/coredns@v${COREDNS_VERS}
 WORKDIR $GOPATH/pkg/mod/github.com/coredns/coredns@v${COREDNS_VERS}
 RUN go mod download
 
-COPY --link ./ $GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
+COPY ./coredns-isonetworking /plugin
+# COPY --link ./ $GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
+
+RUN go mod edit -replace isonetworking=/plugin
+# RUN go mod edit -replace isonetworking=$GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
+
 RUN sed -i "s/^#.*//g; /^$/d; $PLUGIN_PRIO i docker:isonetworking" plugin.cfg 
-RUN go mod edit -replace isonetworking=$GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
+
 RUN go generate coredns.go
-RUN apk add --no-cache gcc musl-dev
 RUN go build -mod=mod -o=/usr/local/bin/coredns
-RUN apk --no-cache add binutils 
 RUN strip -vs /usr/local/bin/coredns
     
 FROM alpine:${ALPINE_VERS}
