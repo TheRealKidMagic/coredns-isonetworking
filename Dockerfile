@@ -19,14 +19,14 @@ COPY ./plugin/iprewrite ./plugin/iprewrite/
 # Add iprewrite plugin to the plugin.cfg file - aligns the path to CoreDNS
 RUN echo "iprewrite:github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite" >> plugin.cfg
 
+# Insert import statement into the import block of main.go
+RUN sed -i '/^import (/a\    _ "github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite"' core/dnsserver/main.go
+
 # Crucial to realign the path relative to the Go build
 RUN go mod edit -replace github.com/TheRealKidMagic/coredns-isonetworking/plugin/iprewrite=./plugin/iprewrite
 
 # Run 'go mod tidy' to resolve and download dependencies for the plugin
 RUN go mod tidy
-
-#RUN go get gopkg.in/DataDog/dd-trace-go.v1@v1.44.0
-RUN ls plugin/iprewrite && cat plugin.cfg && go mod tidy
 
 # Build CoreDNS with iprewrite plugin
 RUN make coredns
