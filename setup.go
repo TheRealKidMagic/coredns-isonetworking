@@ -5,9 +5,9 @@ import (
 	"net"
 	"strings"
 
-	"coredns/caddy"
-	"coredns/core/dnsserver"
-	"coredns/plugin"
+	"github.com/coredns/caddy"
+	"github.com/coredns/core/dnsserver"
+	"github.com/coredns/coredns/plugin"
 )
 
 // init registers this plugin.
