@@ -17,7 +17,7 @@ ARG COREDNS_VERS=latest
 # RUN go mod download
 
 WORKDIR /go/src/github.com/coredns/coredns
-RUN git clone --branch v${COREDNS_VERS} https://github.com/coredns/coredns.git .
+RUN git clone --branch ${COREDNS_VERS} https://github.com/coredns/coredns.git .
 
 COPY . /plugin
 # COPY --link ./ $GOPATH/pkg/mod/github.com/therealkidmagic/coredns-isonetworking
