@@ -52,7 +52,7 @@ func setup(c *caddy.Controller) error {
 	}
 
 	// Add the plugin to the chain
-	dnsserver.Get.AddPlugin(func(next plugin.Handler) plugin.Handler {
+	dnsserver.GetConfig(c).AddPlugin(func(next plugin.Handler) plugin.Handler {
 		i.Next = next
 		return i
 	})
