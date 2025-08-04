@@ -1,9 +1,9 @@
 # Dockerfile
 # Start with a builder stage to compile the application
 ARG GOLANG_VERS=1.23.9
-ARG ALPINE_VERS=""
+ARG ALPINE_VERS=3.22.1
 
-FROM golang:${GOLANG_VERS}-alpine as builder
+FROM golang:1.23.9-alpine as builder
 # FROM golang:${GOLANG_VERS}-alpine${ALPINE_VERS} as builder
 
 RUN apk add --no-cache gcc musl-dev git binutils
