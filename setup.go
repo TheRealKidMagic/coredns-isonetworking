@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/coredns/caddy"
-	"github.com/coredns/core/dnsserver"
+	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
 )
 
