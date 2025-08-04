@@ -1,7 +1,7 @@
 # Dockerfile
 # Start with a builder stage to compile the application
 ARG GOLANG_VERS=1.24.5
-ARG ALPINE_VERS=3.17
+ARG ALPINE_VERS=""
 
 FROM golang:${GOLANG_VERS}-alpine${ALPINE_VERS} as builder
 
